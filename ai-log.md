@@ -3,7 +3,7 @@
 > Nguyên tắc: AI là trợ lý, không phải tác giả. Mọi thành viên phải giải thích được nội dung khi vấn đáp.
 > Cột **Ngày** do nhóm điền theo thực tế. Cột cuối là quan trọng nhất.
 
-Thành viên: Châu Y Kazan (Kazan) · Nguyễn Văn Huy (Huy) · Phan Hùng Khanh (Khanh)
+Thành viên: Châu Y Kazan (Kazan) · Nguyễn Văn Huy (Huy, nhóm trưởng) · Phan Hùng Khanh (Khanh) · Trương Nguyễn Bảo Tâm (Tâm)
 
 | Ngày | Thành viên | Công cụ | Mục đích / prompt tóm tắt | AI đề xuất gì | Nhóm đã giữ / sửa / bỏ gì và vì sao |
 |---|---|---|---|---|---|

@@ -12,19 +12,20 @@ Ba thách thức kiến trúc cốt lõi:
 
 Ngoài ra: không mất bài khi mất mạng/server restart (mất tối đa 30 giây thao tác); chi phí hạ tầng tỷ lệ với số tenant.
 
-## Nhóm (3 thành viên)
+## Nhóm (4 thành viên)
 
-Mỗi người giữ một hoặc hai vai chịu trách nhiệm chính nhưng vẫn tham gia mọi phần.
+Nhóm trưởng: **Nguyễn Văn Huy**. Mỗi người giữ một hoặc hai vai chịu trách nhiệm chính nhưng vẫn tham gia mọi phần.
 
 | Thành viên | Vai trò | Sản phẩm phụ trách chính | Mốc |
 |---|---|---|---|
+| Nguyễn Văn Huy | Nhóm trưởng | Điều phối, phân công, chốt tiến độ & nộp bài | Mọi mốc |
+| Nguyễn Văn Huy | Requirements Owner | Business goals, use case, QA scenario, Utility Tree | M1 |
 | Châu Y Kazan | Lead Architect | ADR, C4, quyết định multi-tenancy | M1, M2 |
 | Châu Y Kazan | Documentation Owner | docs/, ai-log.md, biên bản họp, báo cáo | Mọi mốc |
-| Nguyễn Văn Huy | Requirements Owner | Business goals, use case, QA scenario, Utility Tree | M1 |
-| Nguyễn Văn Huy | QA/Test Lead | Test cách ly dữ liệu, load test, test plan | M3 |
 | Phan Hùng Khanh | Prototype Lead | 2 tenant + 1 plugin động + load test | M2, M3 |
+| Trương Nguyễn Bảo Tâm | QA/Test Lead | Test cách ly dữ liệu, load test, test plan | M3 |
 
-> Cách chia vai trên là đề xuất ban đầu (5 vai / 3 người). Nhóm họp thống nhất lại và sửa bảng này nếu cần.
+> Cách chia vai trên là đề xuất (5 vai / 4 người; vai QA/Test Lead chuyển từ Huy sang Tâm). Nhóm họp thống nhất lại và sửa bảng này nếu cần.
 
 ## Cấu trúc repo
 ```
