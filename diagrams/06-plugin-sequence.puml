@@ -1,0 +1,21 @@
+@startuml
+title Plugin QR enablement per tenant
+actor "Tenant admin A" as Admin
+participant "Core API" as API
+database "Tenant A DB" as DB
+participant "QR plugin process" as QR
+Admin -> API : POST enable QR (HTTPS)
+API -> DB : set enabled=true (SQL commit)
+API --> Admin : 200 enabled
+Admin -> API : POST attendance QR (HTTPS)
+API -> DB : verify enabled + enrollment
+API -> QR : HTTP JSON tenant-scoped, timeout 500ms
+QR --> API : attendance result
+API -> DB : persist attendance
+API --> Admin : 200
+note bottom
+  Tenant B registry remains disabled.
+  QR process has no database credential; timeout returns 503
+  for QR only and does not block exam submissions.
+end note
+@enduml

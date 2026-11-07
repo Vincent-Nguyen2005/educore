@@ -1,0 +1,22 @@
+@startuml
+title EduCore C4 L1 - System Context
+left to right direction
+actor "Sinh viên" as Student
+actor "Giảng viên" as Teacher
+actor "Phòng đào tạo / Tenant admin" as Admin
+actor "SaaS owner / Ops" as Ops
+rectangle "EduCore SaaS\n[System]" as Edu
+cloud "IdP trường\n[External]" as IdP
+cloud "Plagiarism provider\n[External]" as Plag
+Student --> Edu : HTTPS học, thi, nộp bài
+Teacher --> Edu : HTTPS lớp, đề, điểm
+Admin --> Edu : HTTPS cấu hình, báo cáo
+Ops --> Edu : HTTPS vận hành, onboarding
+Edu --> IdP : OIDC/SAML redirect + token
+Edu ..> Plag : HTTPS async kiểm tra đạo văn
+legend bottom
+  C4 L1: người/ngoại hệ quanh EduCore.
+  --> đồng bộ HTTPS; ..> tác vụ bất đồng bộ.
+  Trust boundary: trình duyệt và IdP ở ngoài SaaS.
+endlegend
+@enduml

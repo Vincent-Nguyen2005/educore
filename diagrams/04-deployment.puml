@@ -1,0 +1,35 @@
+@startuml
+title EduCore Deployment v2 - scheduled exam window
+node "Student device" {
+  artifact "Browser + IndexedDB" as B
+}
+cloud "TLS / CDN" as CDN
+node "Kubernetes cluster" {
+  node "Gateway replicas\npre-scale" as G
+  node "Core API replicas\npre-scale" as A
+  node "Exam worker replicas\nindependent scale" as W
+  node "Plugin sandbox pool" as P
+  node "Reporting jobs" as R
+}
+node "PostgreSQL cluster\nshared hardware" {
+  database "Tenant A DB / role A" as DBA
+  database "Tenant B DB / role B" as DBB
+  database "Control DB" as Control
+}
+B --> CDN : HTTPS, local save first
+CDN --> G : HTTPS
+G --> A : HTTPS verified identity
+A --> DBA : SQL pool A
+A --> DBB : SQL pool B
+A --> Control : read-only tenant map
+A --> P : HTTP timeout
+W --> DBA : SQL pending
+W --> DBB : SQL pending
+R --> DBA : read-only SQL
+R --> DBB : read-only SQL
+legend bottom
+  Solid arrows are synchronous except worker polling.
+  DB roles and network policy are trust boundaries.
+  Pre-scale from published exam schedule; quota per tenant.
+endlegend
+@enduml

@@ -1,0 +1,34 @@
+@startuml
+title EduCore C4 L2 - Container View v2
+left to right direction
+actor "Browser" as Browser
+rectangle "Gateway / Auth\nOIDC/SAML, rate limit" as Gateway
+rectangle "Core API\nmodular monolith" as Core
+rectangle "Exam worker\nasync grading" as Worker
+rectangle "Plugin QR process\nHTTP contract" as Plugin
+database "Tenant A DB\nrole A only" as DBA
+database "Tenant B DB\nrole B only" as DBB
+database "Control plane DB\ntenant registry" as Catalog
+database "Object storage / CDN\nmaterials, video" as Object
+rectangle "Reporting / warning job" as Report
+cloud "IdP trường" as IdP
+cloud "Plagiarism mock" as Plag
+Browser --> Gateway : HTTPS
+Gateway --> IdP : OIDC/SAML
+Gateway --> Core : HTTPS + verified context
+Core --> Catalog : read tenant routing/config
+Core --> DBA : SQL, credential A
+Core --> DBB : SQL, credential B
+Core --> Object : signed URL / metadata
+Core --> Plugin : HTTP JSON, timeout
+Worker --> DBA : SQL pending receipt
+Worker --> DBB : SQL pending receipt
+Report --> DBA : read-only SQL
+Report --> DBB : read-only SQL
+Worker ..> Plag : async HTTPS
+legend bottom
+  C4 L2: database per tenant, shared compute.
+  --> synchronous; ..> asynchronous.
+  Cross-DB role permission denied; no plugin DB access.
+endlegend
+@enduml

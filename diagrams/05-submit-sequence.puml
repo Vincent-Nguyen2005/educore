@@ -1,0 +1,24 @@
+@startuml
+title Exam submission - durable receipt and retry
+actor Student
+participant "Browser/IndexedDB" as Browser
+participant "Gateway" as Gateway
+participant "Core API" as API
+database "Tenant DB" as DB
+participant "Exam worker" as Worker
+Student -> Browser : answer/submit
+Browser -> Browser : persist local draft + key + seq
+Browser -> Gateway : POST submission (HTTPS)
+Gateway -> API : verified tenant context
+API -> DB : INSERT receipt idempotently (SQL)
+DB --> API : COMMIT
+API --> Browser : 202 receipt
+Browser -> Browser : mark server saved
+Worker -> DB : poll pending (SQL)
+Worker -> DB : grade, mark processed
+note bottom
+  If network/API fails before 202, Browser retries same key.
+  API restart after COMMIT cannot erase receipt.
+  Worker processing is asynchronous; no grade promise in 202.
+end note
+@enduml

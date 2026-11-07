@@ -16,7 +16,7 @@
 
 | # | Giả định | Ảnh hưởng kiến trúc |
 |---|---|---|
-| A1 | MVP dùng shared schema + row-level `tenant_id`; Enterprise nâng cấp lên schema/DB riêng | ADR multi-tenancy, cost |
+| A1 | Giả định M1 ban đầu là shared schema + RLS; Architecture v2 đề xuất DB-per-tenant trên shared cluster để giảm risk S4. Cần nhóm xác nhận ADR-001. | ADR multi-tenancy, cost |
 | A2 | Lịch thi biết trước ≥ 1 tuần → pre-scale + warm pool | Chiến lược burst |
 | A3 | Plagiarism check là async (có SLA riêng) | Tách submission path khỏi external call |
 | A4 | Client web có IndexedDB/LocalStorage để buffer autosave | Reliability khi mất mạng |

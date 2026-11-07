@@ -1,53 +1,45 @@
-# EduCore – LMS & Thi trực tuyến đa trường (SaaS)
+# EduCore — SE 403, đề tài 4
 
-SE 403 – Group Project · Đề tài 4 · Giai đoạn 0 (Khởi động) và Giai đoạn 1 (Architectural Drivers, mốc M1).
+LMS SaaS đa trường, tổ chức theo **giai đoạn 0–5** của [hướng dẫn môn](CMUSE%20403%20%E2%80%93%20H%C6%B0%E1%BB%9Bng%20d%E1%BA%ABn%20th%E1%BB%B1c%20hi%E1%BB%87n%20Group%20Project.pdf). Repo có SAD, ADR, view, ATAM và prototype hai tenant. Kết quả đo chưa được tuyên bố khi chưa chạy test.
 
-## Bài toán
-EduCore là nền tảng LMS SaaS dùng chung cho nhiều trường đại học/cao đẳng. Mỗi trường là một **tenant** (10.000–40.000 SV) với quy trình đào tạo và công thức tính điểm riêng. Đợt thi cuối kỳ có thể có **8.000 SV nộp bài trong 1 phút cuối**.
+## Lộ trình và sản phẩm
 
-Ba thách thức kiến trúc cốt lõi:
-1. **Multi-tenancy & Security** – cô lập dữ liệu tuyệt đối giữa các tenant, kể cả khi lỗi cấu hình.
-2. **Performance dưới tải đột biến dự báo được** – 8.000 nộp bài/phút, p95 < 1 giây.
-3. **Extensibility** – công thức điểm cấu hình được + plugin hot-install (VD điểm danh QR) không redeploy core.
-
-Ngoài ra: không mất bài khi mất mạng/server restart (mất tối đa 30 giây thao tác); chi phí hạ tầng tỷ lệ với số tenant.
-
-## Nhóm (4 thành viên)
-
-Nhóm trưởng: **Nguyễn Văn Huy**. Mỗi người giữ một hoặc hai vai chịu trách nhiệm chính nhưng vẫn tham gia mọi phần.
-
-| Thành viên | Vai trò | Sản phẩm phụ trách chính | Mốc |
+| Giai đoạn | Tuần / mốc | Bước | Sản phẩm |
 |---|---|---|---|
-| Nguyễn Văn Huy | Nhóm trưởng | Điều phối, phân công, chốt tiến độ & nộp bài | Mọi mốc |
-| Nguyễn Văn Huy | Requirements Owner | Business goals, use case, QA scenario, Utility Tree | M1 |
-| Châu Y Kazan | Lead Architect | ADR, C4, quyết định multi-tenancy | M1, M2 |
-| Châu Y Kazan | Documentation Owner | docs/, ai-log.md, biên bản họp, báo cáo | Mọi mốc |
-| Phan Hùng Khanh | Prototype Lead | 2 tenant + 1 plugin động + load test | M2, M3 |
-| Trương Nguyễn Bảo Tâm | QA/Test Lead | Test cách ly dữ liệu, load test, test plan | M3 |
+| 0 Khởi động | 1–2 | 1–2 | Phân vai, repo, [assumptions](docs/07-assumptions.md) |
+| 1 Drivers | 4 / M1 | 3–6 | [Goals](docs/01-business-goals.md), [stakeholders](docs/02-stakeholders.md), [use cases](docs/03-use-cases.md), [constraints](docs/04-constraints.md), [scenarios](docs/05-qa-scenarios.md), [utility tree](docs/06-utility-tree.md) |
+| 2 Thiết kế | 8 / M2 | 7–10 | [Tactics/style](docs/08-tactics-and-style.md), [views](diagrams/README.md), [ADR](adr/README.md) |
+| 3 Đánh giá | 11 / M3 | 11–12 | [ATAM và Architecture v2](docs/09-atam.md) |
+| 4 Prototype | 14 / M4 | 13–14 | [Code](src/core/app.py), [test](tests/integration.py), [load test](src/loadtest/load.py), [verification](docs/11-verification.md) |
+| 5 Hoàn thiện | 15 / M5 | 15 | [SAD](docs/10-sad.md), [slides](docs/slides.md), [vấn đáp](docs/12-presentation.md), [AI log](ai-log.md) |
 
-> Cách chia vai trên là đề xuất (5 vai / 4 người; vai QA/Test Lead chuyển từ Huy sang Tâm). Nhóm họp thống nhất lại và sửa bảng này nếu cần.
+## Chạy prototype
 
-## Cấu trúc repo
-```
-educore/
-├── docs/
-│   ├── 01-business-goals.md      02-stakeholders.md
-│   ├── 03-use-cases.md           04-constraints.md
-│   ├── 05-qa-scenarios.md        06-utility-tree.md
-│   └── 07-assumptions.md
-├── adr/
-├── diagrams/
-├── src/   (tenant-a, tenant-b, plugin-qr, core, loadtest)
-├── ai-log.md
-└── README.md
+Cần Docker Desktop đang chạy. Tại thư mục gốc:
+
+```sh
+docker compose up --build -d
+python tests/integration.py
+python tests/restart.py
+python -m pip install -r src/loadtest/requirements.txt
+python src/loadtest/load.py --users 8000 --seconds 60
 ```
 
-## Prototype tối thiểu (M2–M4)
-- 2 tenant với công thức tính điểm khác nhau
-- 1 plugin cài đặt động (điểm danh QR)
-- Load test kịch bản nộp bài thi đồng thời
-- Test chứng minh cách ly dữ liệu giữa tenant
-- Chạy được bằng một lệnh `docker compose up`
+Demo browser: `http://localhost:8080/static/exam-demo.html`. API key demo là `demo-key-a` và `demo-key-b`; đây chỉ là credential thử nghiệm, không phải SSO production. Lần đầu PostgreSQL init tạo hai DB, hai role độc lập. Sau khi đổi init SQL, cần tạo **volume mới có chủ đích** hoặc migration vì init script chỉ chạy khi DB chưa tồn tại. Không xóa volume nếu còn bài làm cần giữ.
 
-## Nguyên tắc
-AI là trợ lý, không phải tác giả – mọi thành viên phải giải thích được nội dung khi vấn đáp. Mọi lần dùng AI ghi vào `ai-log.md`.
+Unit test không cần Docker:
+
+```sh
+python -m unittest discover -s tests -v
+```
+
+Load script ghi `load-results.json` gồm raw latency, thời điểm bắt đầu và summary. [Kết quả đo thực tế](docs/11-verification.md) có run 8.000/60s hợp lệ với p95 266,65ms trên máy local; không lấy số đo máy cá nhân để khẳng định SLA production. Dockerfile dùng `--trusted-host` cho pip vì môi trường phát triển hiện lỗi CA; production phải cấu hình CA đáng tin cậy và bỏ tùy chọn này.
+
+## Phạm vi và việc cần người thật hoàn tất
+
+- Phỏng vấn ít nhất hai giảng viên/cán bộ đào tạo, điền [bảng khác biệt tenant](docs/07-assumptions.md).
+- Nhóm xác nhận phân vai, các ADR, tổ chức peer review và ghi nhận phản hồi thật vào [ATAM](docs/09-atam.md).
+- Chạy lại integration/load/restart test trên hạ tầng mục tiêu; mở rộng browser test cho crash/quota, kiểm tra TLS/SSO và autosave nền đồng thời theo [verification](docs/11-verification.md).
+- Mỗi thành viên review code AI tạo, điền người review và quyết định giữ/sửa/bỏ trong [AI log](ai-log.md), luyện vấn đáp chéo.
+
+Prototype chỉ bao phủ exam, tenant routing, grading và plugin QR. Course/content, SSO, plagiarism và báo cáo được mô tả ở view và contract nhưng chưa là tính năng chạy được. SLO p95 và 0 mất bài chưa được xác nhận.

@@ -18,6 +18,12 @@ Thành viên: Châu Y Kazan (Kazan) · Nguyễn Văn Huy (Huy, nhóm trưởng) 
 | _(điền)_ | Khanh | Claude | "Cách đo p95 cho 8K nộp bài/phút bằng k6" | Script mẫu | Giữ ý tưởng; tự viết script ở M4, không nộp code chưa đọc |
 | _(điền)_ | _(điền)_ | Claude | Soạn bản Word + repo này từ nội dung nhóm cung cấp và hướng dẫn SE 403 | Văn bản; thêm S10 (onboard 1 ngày), bảng khác biệt tenant, bảng "3 câu hỏi" | _(nhóm điền: đã đọc, sửa gì, giữ gì và vì sao)_ |
 
+## Lần hỗ trợ AI hiện tại (07/11/2026)
+
+| Ngày | Thành viên | Công cụ | Mục đích / prompt tóm tắt | AI đề xuất gì | Nhóm đã giữ / sửa / bỏ gì và vì sao |
+|---|---|---|---|---|---|
+| 07/11/2026 | Người yêu cầu (chờ nhóm xác nhận tên) | Codex | Thực hiện tuần tự giai đoạn 0–5 EduCore theo PDF | ADR, views PlantUML, ATAM v2, SAD, skeleton Docker/Python, test và slide outline | **Chưa được nhóm review/chấp nhận**. Cần đọc từng ADR, chạy test và ghi sửa đổi cùng lý do trước khi nộp. Không dùng số đo giả; phỏng vấn/peer review để trống. Reviewer cho từng file code: chờ phân công. |
+
 ## Checklist nộp M1
 
 **Giai đoạn 0**

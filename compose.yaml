@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: local_root_only
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./src/core/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      retries: 30
+  api:
+    build: ./src/core
+    environment:
+      TENANT_A_DSN: postgresql://tenant_a:local_a_only@db:5432/educore_a
+      TENANT_B_DSN: postgresql://tenant_b:local_b_only@db:5432/educore_b
+      TENANT_A_KEY: demo-key-a
+      TENANT_B_KEY: demo-key-b
+      QR_URL: http://qr-plugin:8081
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+  worker:
+    build: ./src/core
+    command: ["python", "worker.py"]
+    environment:
+      TENANT_A_DSN: postgresql://tenant_a:local_a_only@db:5432/educore_a
+      TENANT_B_DSN: postgresql://tenant_b:local_b_only@db:5432/educore_b
+    depends_on:
+      db:
+        condition: service_healthy
+  qr-plugin:
+    build: ./src/plugin-qr
+volumes:
+  pgdata:

@@ -1,0 +1,30 @@
+@startuml
+title EduCore C4 L3 - Core API components
+left to right direction
+rectangle "Gateway verified context" as G
+package "Core API" {
+  rectangle "Tenant resolver\nclaim + host match" as Tenant
+  rectangle "Course module" as Course
+  rectangle "Exam receipt module\nidempotency + sequence" as Exam
+  rectangle "Grading config module\nversioned JSON" as Grade
+  rectangle "Plugin registry / dispatcher" as Registry
+  rectangle "Audit adapter" as Audit
+}
+database "Tenant DB selected by role" as DB
+rectangle "Plugin process" as Plugin
+G --> Tenant : trusted context
+Tenant --> Course : scoped request
+Tenant --> Exam : scoped request
+Tenant --> Grade : scoped request
+Tenant --> Registry : scoped request
+Exam --> DB : SQL transaction
+Grade --> DB : SQL config/read
+Registry --> DB : SQL enablement
+Registry --> Plugin : HTTP JSON
+Tenant --> Audit : denied access event
+legend bottom
+  C4 L3: components inside Core API.
+  All DB calls use tenant-scoped credential from resolver.
+  Solid arrows are synchronous; exam worker is shown in L2.
+endlegend
+@enduml
